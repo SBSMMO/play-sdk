@@ -1,7 +1,9 @@
 package com.example
 
 object Hello {
-  def main(args: Array[String]): Unit = {
-    println("Hello, world!")
+  
+  def sayHello(): String = {
+    "Hello, world!"
   }
+  
 }
