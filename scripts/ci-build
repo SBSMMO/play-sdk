@@ -1,0 +1,14 @@
+set -o nounset -o errexit
+
+echo ""
+echo "Validating code formatting"
+#scripts/validate-format
+
+echo ""
+echo "Testing and generating documentation"
+#scripts/sbt clean coverage test doc coverageAggregate
+scripts/sbt clean test
+
+echo ""
+echo "Build finished"
+echo ""
