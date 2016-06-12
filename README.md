@@ -1,2 +1,4 @@
-# play-sdk
-Modules for use in SDK projects
+play-sdk
+=========================
+
+SDK project for building scalable secure projects with scala and play.
