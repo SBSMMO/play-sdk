@@ -1,11 +1,11 @@
 /*
- * Copyright 2014-2016 Game For Me LTD.
+ *  Copyright 2010-2014 Benjamin Lings
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,39 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.co.g4me.sdk.boundary.guice
+package net.codingwell.scalaguice
 
 import com.google.inject.name.Named
 import com.google.inject.{ Guice, Key, AbstractModule }
-import org.scalatest.{ WordSpec, MustMatchers }
+import org.scalatest.{ WordSpec, Matchers }
+
 import java.util.{ Map => JMap, Set => JSet }
 import scala.collection.{ immutable => im }
-import net.codingwell.scalaguice.InjectorExtensions._
-import net.codingwell.scalaguice.{ ScalaModule, MapProvider, MapOfKToSetOfVProvider }
+import InjectorExtensions._
 
-class MapProviderSpec extends WordSpec with MustMatchers {
+class MapProviderSpec extends WordSpec with Matchers {
   private val testMap = newMap("1" -> 1, "2" -> 2)
   private val testMapToSet = newMap("1" -> newSet(1, 3), "2" -> newSet(2, 4))
 
   private def validate(map: im.Map[String, Int]): Unit = {
-    map must have size 2
-    map("1") must equal(1)
-    map("2") must equal(2)
+    map should have size 2
+    map("1") should equal(1)
+    map("2") should equal(2)
   }
 
   private def validateWithSet(map: im.Map[String, im.Set[Int]]): Unit = {
-    map must have size 2
+    map should have size 2
 
     val v1 = map("1")
-    v1 must have size 2
-    v1 must contain(1)
-    v1 must contain(3)
+    v1 should have size 2
+    v1 should contain(1)
+    v1 should contain(3)
 
     val v2 = map("2")
-    v2 must have size 2
-    v2 must contain(2)
-    v2 must contain(4)
+    v2 should have size 2
+    v2 should contain(2)
+    v2 should contain(4)
   }
 
   "A Map Provider" should {
@@ -99,7 +98,7 @@ class MapProviderSpec extends WordSpec with MustMatchers {
           bind[im.Map[String, Int]].toProvider(new MapProvider(Key.get(typeLiteral[JMap[String, Int]])))
         }
       }
-      Guice.createInjector(module).instance[im.Map[String, Int]] must be('empty)
+      Guice.createInjector(module).instance[im.Map[String, Int]] should be('empty)
     }
 
     "allow binding an empty JMap[K, JSet[V]]" in {
@@ -110,7 +109,7 @@ class MapProviderSpec extends WordSpec with MustMatchers {
           bind[im.Map[String, im.Set[Int]]].toProvider(provider)
         }
       }
-      Guice.createInjector(module).instance[im.Map[String, im.Set[Int]]] must be('empty)
+      Guice.createInjector(module).instance[im.Map[String, im.Set[Int]]] should be('empty)
     }
   }
 

@@ -1,11 +1,11 @@
 /*
- * Copyright 2014-2016 Game For Me LTD.
+ *  Copyright 2010-2014 Benjamin Lings
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,21 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.co.g4me.sdk.boundary.guice
+package net.codingwell.scalaguice
 
 import com.google.inject._
-import uk.co.g4me.sdk.AOP
-import net.codingwell.scalaguice._
-import org.scalatest.{ MustMatchers, WordSpec }
+import org.scalatest.{ Matchers, WordSpec }
 
-/**
- * @author nshaw
- * 25 Jun 2016
- *
- * Tests for all external immediate library calls
- */
-class ScalaModuleSpec extends WordSpec with MustMatchers {
+class ScalaModuleSpec extends WordSpec with Matchers {
 
   "A Scala Guice module" should {
 
@@ -110,12 +101,9 @@ class ScalaModuleSpec extends WordSpec with MustMatchers {
           bind[A].to[A]
         }
       }
-
       val thrown = intercept[CreationException] {
         Guice.createInjector(module).getInstance(classOf[A])
-
       }
-
       val messages = thrown.getErrorMessages
       assert(messages.size == 1)
       val sources = messages.iterator.next.getSource
@@ -130,10 +118,9 @@ class ScalaModuleSpec extends WordSpec with MustMatchers {
           bindConstant().annotatedWithName("second").to("second")
         }
       }
-
       val twoStrings = Guice.createInjector(module).getInstance(classOf[TwoStrings])
-      twoStrings.first must be("first")
-      twoStrings.second must be("second")
+      twoStrings.first should be("first")
+      twoStrings.second should be("second")
     }
 
     "allow binding annotation interceptor" in {
@@ -144,8 +131,8 @@ class ScalaModuleSpec extends WordSpec with MustMatchers {
         }
       }
       val say = Guice.createInjector(module).getInstance(classOf[Say])
-      say.hi("Bob") must be("Hi Bob")
+      say.hi("Bob") should be("Hi Bob")
     }
-
   }
+
 }

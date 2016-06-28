@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.g4me.sdk;
+package net.codingwell.scalaguice;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

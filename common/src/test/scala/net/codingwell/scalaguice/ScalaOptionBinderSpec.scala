@@ -1,11 +1,11 @@
 /*
- * Copyright 2014-2016 Game For Me LTD.
+ *  Copyright 2010-2014 Benjamin Lings
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.co.g4me.sdk.boundary.guice
+package net.codingwell.scalaguice
 
 import java.lang.annotation.Annotation
+
 import com.google.common.base.Optional
 import com.google.inject.name.{ Named, Names }
 import com.google.inject.{ AbstractModule, Guice, Key, Module, Provider }
 import net.codingwell.scalaguice.InjectorExtensions._
-import org.scalatest.{ MustMatchers, WordSpec }
-import net.codingwell.scalaguice.ScalaOptionBinder
-import net.codingwell.scalaguice.ScalaModule
+import org.scalatest.{ Matchers, WordSpec }
 
-class ScalaOptionBinderSpec extends WordSpec with MustMatchers {
+class ScalaOptionBinderSpec extends WordSpec with Matchers {
   private case class W[T](t: T)
   private val annotation = Names.named("N")
 
@@ -341,55 +339,55 @@ class ScalaOptionBinderSpec extends WordSpec with MustMatchers {
     val injector = Guice.createInjector(module)
 
     // Check Option
-    injector.instance[Option[T]] must contain(expected)
-    injector.instance[Option[Provider[T]]].get.get() must equal(expected)
-    injector.instance[Option[javax.inject.Provider[T]]].get.get() must equal(expected)
+    injector.instance[Option[T]] should contain(expected)
+    injector.instance[Option[Provider[T]]].get.get() should equal(expected)
+    injector.instance[Option[javax.inject.Provider[T]]].get.get() should equal(expected)
 
     // Check Optional
-    injector.instance[Optional[T]].get must equal(expected)
-    injector.instance[Optional[Provider[T]]].get.get() must equal(expected)
-    injector.instance[Optional[javax.inject.Provider[T]]].get.get() must equal(expected)
+    injector.instance[Optional[T]].get should equal(expected)
+    injector.instance[Optional[Provider[T]]].get.get() should equal(expected)
+    injector.instance[Optional[javax.inject.Provider[T]]].get.get() should equal(expected)
   }
 
   private def validateWithAnn[T: Manifest, Ann <: Annotation: Manifest](module: Module, expected: T = "A"): Unit = {
     val injector = Guice.createInjector(module)
 
     // Check Option
-    injector.instance[Option[T], Ann] must contain(expected)
-    injector.instance[Option[Provider[T]], Ann].get.get() must equal(expected)
-    injector.instance[Option[javax.inject.Provider[T]], Ann].get.get() must equal(expected)
+    injector.instance[Option[T], Ann] should contain(expected)
+    injector.instance[Option[Provider[T]], Ann].get.get() should equal(expected)
+    injector.instance[Option[javax.inject.Provider[T]], Ann].get.get() should equal(expected)
 
     // Check Optional
-    injector.instance[Optional[T], Ann].get must equal(expected)
-    injector.instance[Optional[Provider[T]], Ann].get.get() must equal(expected)
-    injector.instance[Optional[javax.inject.Provider[T]], Ann].get.get() must equal(expected)
+    injector.instance[Optional[T], Ann].get should equal(expected)
+    injector.instance[Optional[Provider[T]], Ann].get.get() should equal(expected)
+    injector.instance[Optional[javax.inject.Provider[T]], Ann].get.get() should equal(expected)
   }
 
   private def validateWithAnnotation[T: Manifest](module: Module, annotation: Annotation, expected: T = "A"): Unit = {
     val injector = Guice.createInjector(module)
 
     // Check Option
-    injector.instance[Option[T]](annotation) must contain(expected)
-    injector.instance[Option[Provider[T]]](annotation).get.get() must equal(expected)
-    injector.instance[Option[javax.inject.Provider[T]]](annotation).get.get() must equal(expected)
+    injector.instance[Option[T]](annotation) should contain(expected)
+    injector.instance[Option[Provider[T]]](annotation).get.get() should equal(expected)
+    injector.instance[Option[javax.inject.Provider[T]]](annotation).get.get() should equal(expected)
 
     // Check Optional
-    injector.instance[Optional[T]](annotation).get must equal(expected)
-    injector.instance[Optional[Provider[T]]](annotation).get.get() must equal(expected)
-    injector.instance[Optional[javax.inject.Provider[T]]](annotation).get.get() must equal(expected)
+    injector.instance[Optional[T]](annotation).get should equal(expected)
+    injector.instance[Optional[Provider[T]]](annotation).get.get() should equal(expected)
+    injector.instance[Optional[javax.inject.Provider[T]]](annotation).get.get() should equal(expected)
   }
 
   private def validateAbsent[T: Manifest](module: Module, expected: T = "A"): Unit = {
     val injector = Guice.createInjector(module)
 
     // Check Option
-    injector.instance[Option[T]] must be(None)
-    injector.instance[Option[Provider[T]]] must be(None)
-    injector.instance[Option[javax.inject.Provider[T]]] must be(None)
+    injector.instance[Option[T]] should be(None)
+    injector.instance[Option[Provider[T]]] should be(None)
+    injector.instance[Option[javax.inject.Provider[T]]] should be(None)
 
     // Check Optional
-    injector.instance[Optional[T]].isPresent must be(false)
-    injector.instance[Optional[Provider[T]]].isPresent must be(false)
-    injector.instance[Optional[javax.inject.Provider[T]]].isPresent must be(false)
+    injector.instance[Optional[T]].isPresent should be(false)
+    injector.instance[Optional[Provider[T]]].isPresent should be(false)
+    injector.instance[Optional[javax.inject.Provider[T]]].isPresent should be(false)
   }
 }

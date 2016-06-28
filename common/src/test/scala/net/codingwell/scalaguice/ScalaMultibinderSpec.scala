@@ -1,11 +1,11 @@
 /*
- * Copyright 2014-2016 Game For Me LTD.
+ *  Copyright 2010-2014 Benjamin Lings
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.co.g4me.sdk.boundary.guice
-
-import scala.collection.{ immutable => im }
-
-import org.scalatest.{ MustMatchers, WordSpec }
+package net.codingwell.scalaguice
 
 import com.google.inject.name.{ Named, Names }
 import com.google.inject.{ AbstractModule, Guice }
+import net.codingwell.scalaguice.InjectorExtensions._
+import org.scalatest.{ Matchers, WordSpec }
 
-import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import net.codingwell.scalaguice.{ ScalaModule, ScalaMultibinder }
+import scala.collection.{ immutable => im }
 
-class ScalaMultibinderSpec extends WordSpec with MustMatchers {
-
+class ScalaMultibinderSpec extends WordSpec with Matchers {
   private case class W[T](t: T)
   private val annotation = Names.named("N")
 
@@ -312,9 +307,9 @@ class ScalaMultibinderSpec extends WordSpec with MustMatchers {
   }
 
   private def validate[T](set: Set[T], expected: T*) {
-    set must have size expected.length
+    set should have size expected.length
     for (e <- expected) {
-      set must contain(e)
+      set should contain(e)
     }
   }
 }

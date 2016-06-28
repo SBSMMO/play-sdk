@@ -1,11 +1,11 @@
 /*
- * Copyright 2014-2016 Game For Me LTD.
+ *  Copyright 2010-2014 Benjamin Lings
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.codingwell.scalaguice
 
-package uk.co.g4me.sdk.boundary.guice
+import org.scalatest.{ Matchers, WordSpec }
 
-import org.scalatest.{ MustMatchers, WordSpec }
 import com.google.inject._
-import java.util.{ Set => JSet, HashSet => JHashSet }
-import scala.collection.{ immutable => im }
-import net.codingwell.scalaguice.ScalaModule
-import net.codingwell.scalaguice.SetProvider
 
-class SetProviderSpec extends WordSpec with MustMatchers {
+import java.util.{ Set => JSet, HashSet => JHashSet }
+
+import scala.collection.{ immutable => im }
+
+class SetProviderSpec extends WordSpec with Matchers {
 
   private val testSet = newSet(1, 3)
 
@@ -36,7 +36,7 @@ class SetProviderSpec extends WordSpec with MustMatchers {
           bind[im.Set[B]].toProvider(new SetProvider(Key.get(typeLiteral[JSet[B]])))
         }
       }
-      Guice.createInjector(module).getInstance(Key.get(typeLiteral[im.Set[B]])) must be('empty)
+      Guice.createInjector(module).getInstance(Key.get(typeLiteral[im.Set[B]])) should be('empty)
     }
 
     "allow binding a Java Set with a Java annotation" in {
@@ -47,7 +47,7 @@ class SetProviderSpec extends WordSpec with MustMatchers {
           bind[im.Set[B]].annotatedWith[Named].toProvider(new SetProvider(Key.get(typeLiteral[JSet[B]], classOf[Named])))
         }
       }
-      Guice.createInjector(module).getInstance(Key.get(typeLiteral[im.Set[B]], classOf[Named])) must be('empty)
+      Guice.createInjector(module).getInstance(Key.get(typeLiteral[im.Set[B]], classOf[Named])) should be('empty)
     }
 
     "allow binding a Java Set with data" in {
@@ -58,9 +58,9 @@ class SetProviderSpec extends WordSpec with MustMatchers {
         }
       }
       val set = Guice.createInjector(module).getInstance(Key.get(typeLiteral[im.Set[Int]]))
-      set must have size 2
-      set must contain(1)
-      set must contain(3)
+      set should have size 2
+      set should contain(1)
+      set should contain(3)
     }
   }
 
