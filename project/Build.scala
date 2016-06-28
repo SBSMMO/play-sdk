@@ -26,12 +26,6 @@ object Build extends Build {
     dependencies = Seq(common, persistence, play)
   )
   
-  lazy val testApp = Project(
-    id = "play-sdk-test-app",
-    base = file("testApp"),
-    dependencies = Seq(security)
-  )
-  
   val root = Project(
     id = "root",
     base = file("."),
