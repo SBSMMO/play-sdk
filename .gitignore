@@ -9,6 +9,8 @@
 *.log
 
 # sbt specific
+.cache-main
+.cache-tests
 .cache
 .history
 .lib/
