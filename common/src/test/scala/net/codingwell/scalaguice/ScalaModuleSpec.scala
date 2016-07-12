@@ -17,8 +17,9 @@ package net.codingwell.scalaguice
 
 import com.google.inject._
 import org.scalatest.{ Matchers, WordSpec }
+import uk.co.g4me.sdk.common.test.AbstractSpec
 
-class ScalaModuleSpec extends WordSpec with Matchers {
+class ScalaModuleSpec extends AbstractSpec {
 
   "A Scala Guice module" should {
 
@@ -119,8 +120,8 @@ class ScalaModuleSpec extends WordSpec with Matchers {
         }
       }
       val twoStrings = Guice.createInjector(module).getInstance(classOf[TwoStrings])
-      twoStrings.first should be("first")
-      twoStrings.second should be("second")
+      twoStrings.first must be("first")
+      twoStrings.second must be("second")
     }
 
     "allow binding annotation interceptor" in {
@@ -131,7 +132,7 @@ class ScalaModuleSpec extends WordSpec with Matchers {
         }
       }
       val say = Guice.createInjector(module).getInstance(classOf[Say])
-      say.hi("Bob") should be("Hi Bob")
+      say.hi("Bob") must be("Hi Bob")
     }
   }
 

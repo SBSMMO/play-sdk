@@ -2,7 +2,8 @@ import Dependencies._
 
 libraryDependencies ++= Seq(  
   Library.scalaGuice,
-  Library.Play.scalaTest,  
+  Library.scalaTest,
+  Library.Play.play,
   //Library.Play.test,
   //Library.Play.specs2 % Test,
   //Library.Play.Specs2.matcherExtra % Test,

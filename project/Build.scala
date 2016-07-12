@@ -3,6 +3,13 @@ import sbt._
 
 object Build extends Build {
   
+  //required for the javaOptions to be passed in
+  fork := true
+
+  javaOptions in (Test) += "-Xdebug"
+
+  javaOptions in (Test) += "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+  
   lazy val common = Project(
     id = "play-sdk-common",
     base = file("common")
@@ -35,5 +42,7 @@ object Build extends Build {
       play,
       security
     ),
-    settings = Defaults.coreDefaultSettings)  
+    settings = Defaults.coreDefaultSettings)
+  
+  
 }

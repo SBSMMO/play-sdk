@@ -11,6 +11,7 @@ object Dependencies {
 
     object Play {
       val version = "2.5.4"
+      val play = "com.typesafe.play" %% "play" % version % "compile,test"
       val ws = "com.typesafe.play" %% "play-ws" % version
       val cache = "com.typesafe.play" %% "play-cache" % version
       //val test = "com.typesafe.play" %% "play-test" % version
@@ -24,15 +25,13 @@ object Dependencies {
     }
     
     object Silhouette {
-      val version = "4.0.0-RC1"
+      private val version = "4.0.0-RC1"
       val silhouette = "com.mohiva" %% "play-silhouette" % version
       val silhouetteBcrypt = "com.mohiva" %% "play-silhouette-password-bcrypt" % version
       val silhouettePersistence = "com.mohiva" %% "play-silhouette-persistence" % version
       val silhouetteCryptoJCA = "com.mohiva" %% "play-silhouette-crypto-jca" % version
       val silhouetteCAS = "com.mohiva" %% "play-silhouette-cas" % version
-    }
-    
-    
+    }   
 
 //    object Specs2 {
 //      private val version = "3.8.3"
@@ -43,6 +42,7 @@ object Dependencies {
     
     val scalaGuice = "net.codingwell" %% "scala-guice" % "4.0.1"
     val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % "2.4.2"
+    val scalaTest = "org.scalatest" %% "scalatest" % "2.2.6"
     
   }
 
