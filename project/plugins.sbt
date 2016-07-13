@@ -1,4 +1,4 @@
-resolvers += Resolver.typesafeRepo("releases")
+resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 resolvers += Classpaths.sbtPluginReleases
 
