@@ -1,7 +1,14 @@
 import sbt.Keys._
 import sbt._
 
-object Build extends Build {
+object Build extends Build {  
+  
+  lazy val commonSettings = Seq(
+    resolvers in ThisBuild += "Atlassian Releases" at "https://maven.atlassian.com/public/",
+    resolvers in ThisBuild += Resolver.mavenLocal,
+    resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots"),
+    resolvers in ThisBuild += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+  )
   
   //required for the javaOptions to be passed in
   fork := true
@@ -41,8 +48,7 @@ object Build extends Build {
       persistence,
       play,
       security
-    ),
-    settings = Defaults.coreDefaultSettings)
+    ), settings = commonSettings)  
   
   
 }

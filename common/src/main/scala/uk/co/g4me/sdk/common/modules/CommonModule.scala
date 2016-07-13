@@ -24,15 +24,13 @@ import com.google.inject.Inject
  * @author nshaw
  * 28 Jun 2016
  */
-class CommonModule @Inject() (implicit configuration: Configuration) extends AbstractModule with CommonConfig {
+class CommonModule @Inject() (implicit configuration: Configuration) extends BaseModule with CommonConfig {
 
-  val c = (Configuration.from(local) ++ configuration).getConfig(root).get
+  val c = (Configuration.from(local) ++ configuration).getConfig(root).getOrElse(Configuration.empty)
 
   def configure() {
+    if (!isEnabled) return
 
-    if (isEnabled) {
-
-    }
   }
 }
 
