@@ -17,6 +17,10 @@
 package uk.co.g4me.sdk.common.modules
 
 import uk.co.g4me.sdk.common.test.AbstractSpec
+import play.api.Configuration
+import com.google.inject.Guice
+import com.google.inject.ProvisionException
+import com.google.inject.ConfigurationException
 
 /**
  * @author nshaw
@@ -28,14 +32,36 @@ class CommonModuleSpec extends AbstractSpec with CommonConfig {
 
     "provide a Map of default settings and " should {
 
-      "be enabled" in {
-        val e = Add(enabled)
+      "be enabled by default " in {
 
-        assert(e == "play.sdk.enabled")
-        assert(local.contains(e))
-        assert(local.get(e) == Some(true))
+        assert(enabled == "play.sdk.enabled")
+        assert(local.contains(enabled))
+        assert(local.get(enabled) == Some(true))
       }
     }
+  }
+
+  "The CommonModule " should {
+    "Automatically install modules on the class path " in {
+      pending
+    }
+
+    "be enabled by default " in {
+      val c = Configuration.empty
+      val injector = Guice.createInjector(new CommonModule(c))
+
+      val ping = injector.getInstance(classOf[Ping])
+
+    }
+
+    "be disabled when set " in {
+      val disabled = Map(enabled -> false)
+      val c = Configuration.from(disabled)
+      val injector = Guice.createInjector(new CommonModule(c))
+
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Ping])
+    }
+
   }
 
 }

@@ -20,15 +20,22 @@ import com.google.inject.PrivateModule
 import play.api.Configuration
 import com.google.inject.Inject
 import uk.co.g4me.sdk.common.modules.CommonModule
+import uk.co.g4me.sdk.common.modules.BaseModule
 
 /**
  * @author nshaw
  * 2 Jul 2016
  */
-class OAuth1Module @Inject() (implicit configuration: Configuration) extends CommonModule with OAuth1Config {
+class OAuth1Module @Inject() (configuration: Configuration) extends BaseModule with OAuth1Config {
+
+  implicit val c = Configuration.from(local) ++ configuration
 
   override def configure() = {
 
+  }
+
+  override def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false)
   }
 
 }
@@ -48,7 +55,7 @@ private[security] trait OAuth1Config extends SecurityConfig {
   }
 
   override def root: String = {
-    super.root.concat(oauth1Root)
+    super.root + "." + oauth1Root
   }
 
 }

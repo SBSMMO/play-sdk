@@ -22,15 +22,20 @@ import javax.inject.Inject
 import play.api.Configuration
 import uk.co.g4me.sdk.common.modules.CommonModule
 import net.codingwell.scalaguice.ScalaModule
+import uk.co.g4me.sdk.common.modules.BaseModule
 
 /**
  * @author nshaw
  * 2 Jul 2016
  */
-class PasswordModule @Inject() (implicit configuration: Configuration) extends CommonModule with ScalaModule with PasswordConfig {
+class PasswordModule @Inject() (configuration: Configuration) extends BaseModule with ScalaModule with PasswordConfig {
 
   override def configure() {
 
+  }
+
+  override def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false)
   }
 
 }
@@ -47,6 +52,10 @@ private[security] trait PasswordConfig extends SecurityConfig {
 
   override def global: Map[String, Any] = {
     super.global ++ local
+  }
+
+  override def root: String = {
+    super.root + "." + passwordRoot
   }
 
 }

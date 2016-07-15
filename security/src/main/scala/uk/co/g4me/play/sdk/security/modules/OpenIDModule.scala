@@ -22,25 +22,32 @@ import javax.inject.Inject
 import play.api.Configuration
 import uk.co.g4me.sdk.common.modules.CommonModule
 import net.codingwell.scalaguice.ScalaModule
+import uk.co.g4me.sdk.common.modules.BaseModule
 
 /**
  * @author nshaw
  * 2 Jul 2016
  */
-class OpenIDModule @Inject() (implicit configuration: Configuration) extends CommonModule with ScalaModule with OpenIDConfig {
+class OpenIDModule @Inject() (configuration: Configuration) extends BaseModule with OpenIDConfig {
+
+  implicit val c = Configuration.from(local) ++ configuration
 
   override def configure() {
 
   }
 
+  override def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false)
+  }
+
 }
 
-trait OpenIDConfig extends SecurityConfig {
+private[security] trait OpenIDConfig extends SecurityConfig {
 
   val openIDRoot = "openid"
 
   override def root: String = {
-    super.root.concat(openIDRoot)
+    super.root + "." + openIDRoot
   }
 
   override def local: Map[String, Any] = {

@@ -17,20 +17,25 @@
 package uk.co.g4me.sdk.common.modules
 
 import play.api.Configuration
-import com.google.inject.AbstractModule
 import com.google.inject.Inject
 
 /**
  * @author nshaw
  * 28 Jun 2016
  */
-class CommonModule @Inject() (implicit configuration: Configuration) extends BaseModule with CommonConfig {
+class CommonModule @Inject() (configuration: Configuration) extends BaseModule with CommonConfig {
 
-  val c = (Configuration.from(local) ++ configuration).getConfig(root).getOrElse(Configuration.empty)
+  implicit val c = Configuration.from(local) ++ configuration
 
   def configure() {
     if (!isEnabled) return
 
+    bind[Ping].to[PingImpl]
+
+  }
+
+  def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false)
   }
 }
 
@@ -38,20 +43,16 @@ trait CommonConfig {
 
   private val rootPath = "play.sdk"
 
-  val enabled = "enabled"
+  val enabled = Add("enabled")
 
-  def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false)
+  def root = {
+    rootPath
   }
 
   def local: Map[String, Any] = {
     Map(
-      Add(enabled) -> true
+      enabled -> true
     )
-  }
-
-  def root = {
-    rootPath
   }
 
   def global: Map[String, Any] = {

@@ -16,16 +16,14 @@
 
 package uk.co.g4me.sdk.common.modules
 
-import com.google.inject.AbstractModule
-import play.api.Configuration
-import net.codingwell.scalaguice.ScalaModule
-
 /**
  * @author nshaw
- * 13 Jul 2016
+ * 15 Jul 2016
  */
-abstract class BaseModule extends ScalaModule {
+class PingImpl extends Ping {
 
-  protected def isEnabled(implicit c: Configuration): Boolean
+}
+
+trait Ping {
 
 }

@@ -22,19 +22,22 @@ import play.api.Configuration
 import javax.inject.Inject
 import uk.co.g4me.sdk.common.modules.CommonModule
 import net.codingwell.scalaguice.ScalaModule
+import uk.co.g4me.sdk.common.modules.BaseModule
 
 /**
  * @author nshaw
  * 2 Jul 2016
  */
-class CASModule @Inject() (implicit configuration: Configuration) extends CommonModule with ScalaModule with CASConfig {
+class CASModule @Inject() (configuration: Configuration) extends BaseModule with ScalaModule with CASConfig {
+
+  implicit val c = Configuration.from(local) ++ configuration
 
   override def configure() {
 
   }
 
-  val defaultPasswordConfig: Configuration = {
-    Configuration.from(local)
+  override def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false)
   }
 
 }
@@ -43,9 +46,11 @@ private[security] trait CASConfig extends SecurityConfig {
 
   private val casRoot = "cas"
 
+  override val enabled = Add("enabled")
+
   override val local: Map[String, Any] = {
     Map(
-      Add(enabled) -> true
+      enabled -> false
     )
   }
 
@@ -54,7 +59,7 @@ private[security] trait CASConfig extends SecurityConfig {
   }
 
   override def root: String = {
-    super.root.concat(casRoot)
+    super.root + "." + casRoot
   }
 
 }

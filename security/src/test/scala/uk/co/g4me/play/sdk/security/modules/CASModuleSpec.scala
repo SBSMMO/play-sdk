@@ -17,38 +17,32 @@
 package uk.co.g4me.play.sdk.security.modules
 
 import uk.co.g4me.sdk.common.test.AbstractSpec
-import com.google.inject.{ ConfigurationException, Guice }
-import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
-import com.mohiva.play.silhouette.impl.providers.CasInfo
-import play.api.{ Configuration, Environment }
-import play.api.mvc.Results._
-import play.api.mvc.{ Action, EssentialAction }
-import org.scalatestplus.play.PlaySpec
-import akka.stream.Materializer
-import org.scalatestplus.play.OneAppPerSuite
+import play.api.Configuration
+import com.google.inject.Guice
 import uk.co.g4me.sdk.common.modules.Ping
+import com.google.inject.ConfigurationException
 
 /**
  * @author nshaw
- * 28 Jun 2016
+ * 15 Jul 2016
  */
-class SecurityModuleSpec extends AbstractSpec with SecurityConfig {
+class CASModuleSpec extends AbstractSpec with CASConfig {
 
-  "The SecurityConfig trait " should {
+  "The CASConfig trait " should {
 
     "provide a Map of default settings and " should {
 
-      "be enabled by default " in {
+      "be disabled by default " in {
 
-        assert(enabled == "play.sdk.security.enabled")
+        assert(enabled == "play.sdk.security.cas.enabled")
         assert(local.contains(enabled))
-        assert(local.get(enabled) == Some(true))
+        assert(local.get(enabled) == Some(false))
       }
     }
   }
 
-  "The SecurityModule " should {
-    "Automatically install modules on the class path " in {
+  "The CASModule " should {
+    "Automatically be installed " in {
       pending
     }
 
@@ -56,8 +50,7 @@ class SecurityModuleSpec extends AbstractSpec with SecurityConfig {
       val c = Configuration.empty
       val injector = Guice.createInjector(new SecurityModule(c))
 
-      val ping = injector.getInstance(classOf[Ping])
-
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Ping])
     }
 
     "be disabled when set " in {
@@ -65,8 +58,9 @@ class SecurityModuleSpec extends AbstractSpec with SecurityConfig {
       val c = Configuration.from(disabled)
       val injector = Guice.createInjector(new SecurityModule(c))
 
-      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Ping])
+      val ping = injector.getInstance(classOf[Ping])
     }
 
   }
+
 }
