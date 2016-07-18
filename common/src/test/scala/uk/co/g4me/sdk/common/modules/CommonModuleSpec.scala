@@ -50,8 +50,7 @@ class CommonModuleSpec extends AbstractSpec with CommonConfig {
       val c = Configuration.empty
       val injector = Guice.createInjector(new CommonModule(c))
 
-      val ping = injector.getInstance(classOf[Ping])
-
+      val ping = injector.getInstance(classOf[Enabled])
     }
 
     "be disabled when set " in {
@@ -59,7 +58,7 @@ class CommonModuleSpec extends AbstractSpec with CommonConfig {
       val c = Configuration.from(disabled)
       val injector = Guice.createInjector(new CommonModule(c))
 
-      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Ping])
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
     }
 
   }

@@ -28,23 +28,21 @@ import uk.co.g4me.sdk.common.modules.BaseModule
  * @author nshaw
  * 2 Jul 2016
  */
-class CASModule @Inject() (configuration: Configuration) extends BaseModule with ScalaModule with CASConfig {
+class CASModule @Inject() (configuration: Configuration) extends CommonModule(configuration) with ScalaModule with CASConfig {
 
-  implicit val c = Configuration.from(local) ++ configuration
+  override implicit lazy val c = Configuration.from(global) ++ configuration
 
   override def configure() {
-
+    if (!isEnabled) return
   }
 
   override def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false)
+    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
   }
 
 }
 
-private[security] trait CASConfig extends SecurityConfig {
-
-  private val casRoot = "cas"
+private[security] trait CASConfig extends SecurityConfig with CASConfigConstants {
 
   override val enabled = Add("enabled")
 
@@ -61,5 +59,11 @@ private[security] trait CASConfig extends SecurityConfig {
   override def root: String = {
     super.root + "." + casRoot
   }
+
+}
+
+trait CASConfigConstants {
+
+  val casRoot = "cas"
 
 }

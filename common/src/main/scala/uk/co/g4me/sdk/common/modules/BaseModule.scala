@@ -24,7 +24,7 @@ import net.codingwell.scalaguice.ScalaModule
  * @author nshaw
  * 13 Jul 2016
  */
-abstract class BaseModule extends ScalaModule {
+trait BaseModule extends ScalaModule {
 
   protected def isEnabled(implicit c: Configuration): Boolean
 

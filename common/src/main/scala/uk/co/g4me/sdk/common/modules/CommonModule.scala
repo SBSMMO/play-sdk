@@ -25,29 +25,26 @@ import com.google.inject.Inject
  */
 class CommonModule @Inject() (configuration: Configuration) extends BaseModule with CommonConfig {
 
-  implicit val c = Configuration.from(local) ++ configuration
+  implicit lazy val c = Configuration.from(global) ++ configuration
 
   def configure() {
     if (!isEnabled) return
 
-    bind[Ping].to[PingImpl]
-
   }
 
   def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false)
+    c.getBoolean(enabled).getOrElse(false) match {
+      case false => false
+      case true =>
+        bind[Enabled].to[EnabledImpl]
+        true
+    }
   }
 }
 
-trait CommonConfig {
+trait CommonConfig extends CommonConfigConstants {
 
-  private val rootPath = "play.sdk"
-
-  val enabled = Add("enabled")
-
-  def root = {
-    rootPath
-  }
+  val enabled = Add(enabledPath)
 
   def local: Map[String, Any] = {
     Map(
@@ -63,4 +60,13 @@ trait CommonConfig {
     root + "." + setting
   }
 
+  def root = {
+    rootPath
+  }
+
+}
+
+trait CommonConfigConstants {
+  val rootPath = "play.sdk"
+  val enabledPath = "enabled"
 }

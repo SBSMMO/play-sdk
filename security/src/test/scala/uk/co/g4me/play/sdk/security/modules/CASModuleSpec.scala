@@ -18,9 +18,8 @@ package uk.co.g4me.play.sdk.security.modules
 
 import uk.co.g4me.sdk.common.test.AbstractSpec
 import play.api.Configuration
-import com.google.inject.Guice
-import uk.co.g4me.sdk.common.modules.Ping
-import com.google.inject.ConfigurationException
+import com.google.inject.{ ConfigurationException, Guice }
+import uk.co.g4me.sdk.common.modules.Enabled
 
 /**
  * @author nshaw
@@ -42,27 +41,24 @@ class CASModuleSpec extends AbstractSpec with CASConfig {
   }
 
   "The CASModule " should {
-    "Automatically be installed " in {
-      pending
-    }
 
-    "be enabled by default " in {
+    "be disabled by default " in {
       val c = Configuration.empty
-      val injector = Guice.createInjector(new SecurityModule(c))
+      val injector = Guice.createInjector(new CASModule(c))
 
-      pending
-      //an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Ping])
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
     }
 
-    "be disabled when set " in {
-      val disabled = Map(enabled -> false)
-      val c = Configuration.from(disabled)
-      val injector = Guice.createInjector(new SecurityModule(c))
+    "be enabled when set " in {
+      val settings = Map(enabled -> true)
+      val c = Configuration.from(settings)
+      val injector = Guice.createInjector(new CASModule(c))
 
-      pending
-      //val ping = injector.getInstance(classOf[Ping])
+      assert(settings.contains(enabled))
+      assert(settings.get(enabled) == Some(true))
+
+      val ping = injector.getInstance(classOf[Enabled])
     }
 
   }
-
 }

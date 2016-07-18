@@ -20,10 +20,10 @@ package uk.co.g4me.sdk.common.modules
  * @author nshaw
  * 15 Jul 2016
  */
-class PingImpl extends Ping {
+class EnabledImpl extends Enabled {
 
 }
 
-trait Ping {
+trait Enabled {
 
 }

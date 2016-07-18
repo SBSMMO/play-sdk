@@ -22,15 +22,15 @@ import play.api.inject.Module
 import uk.co.g4me.sdk.common.modules.{ CommonModule, CommonConfig }
 import uk.co.g4me.sdk.common.modules.BaseModule
 
-class SecurityModule @Inject() (configuration: Configuration) extends BaseModule with SecurityConfig {
+class SecurityModule @Inject() (configuration: Configuration) extends CommonModule(configuration) with SecurityConfig {
 
-  implicit val c = Configuration.from(local) ++ configuration
+  override lazy implicit val c = Configuration.from(global) ++ configuration
 
-  def configure() {
+  override def configure() {
+    super.configure()
 
     if (!isEnabled) return
 
-    install(new CommonModule(c))
     install(new CASModule(c))
     install(new OAuth1Module(c))
     install(new OAuth2Module(c))
@@ -39,15 +39,13 @@ class SecurityModule @Inject() (configuration: Configuration) extends BaseModule
   }
 
   override def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false)
+    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
   }
 }
 
-private[security] trait SecurityConfig extends CommonConfig {
+private[security] trait SecurityConfig extends SecurityConfigConstants with CommonConfig {
 
-  private val securityRoot = "security"
-
-  override val enabled = Add("enabled")
+  override val enabled = Add(enabledPath)
 
   override def root: String = {
     super.root + "." + securityRoot
@@ -55,7 +53,7 @@ private[security] trait SecurityConfig extends CommonConfig {
 
   override def local: Map[String, Any] = {
     Map(
-      Add("enabled") -> true
+      enabled -> true
     )
   }
 
@@ -63,4 +61,8 @@ private[security] trait SecurityConfig extends CommonConfig {
     super.global ++ local
   }
 
+}
+
+trait SecurityConfigConstants {
+  val securityRoot = "security"
 }

@@ -26,7 +26,7 @@ import play.api.mvc.{ Action, EssentialAction }
 import org.scalatestplus.play.PlaySpec
 import akka.stream.Materializer
 import org.scalatestplus.play.OneAppPerSuite
-import uk.co.g4me.sdk.common.modules.Ping
+import uk.co.g4me.sdk.common.modules.Enabled
 
 /**
  * @author nshaw
@@ -56,16 +56,16 @@ class SecurityModuleSpec extends AbstractSpec with SecurityConfig {
       val c = Configuration.empty
       val injector = Guice.createInjector(new SecurityModule(c))
 
-      val ping = injector.getInstance(classOf[Ping])
+      val ping = injector.getInstance(classOf[Enabled])
 
     }
 
     "be disabled when set " in {
-      val disabled = Map(enabled -> false)
+      val disabled = Map("play.sdk.security.enabled" -> false)
       val c = Configuration.from(disabled)
       val injector = Guice.createInjector(new SecurityModule(c))
 
-      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Ping])
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
     }
 
   }
