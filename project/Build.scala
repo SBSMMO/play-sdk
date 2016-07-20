@@ -19,24 +19,24 @@ object Build extends Build {
   
   lazy val common = Project(
     id = "play-sdk-common",
-    base = file("common")
+    base = file("modules/common")
   )
   
   lazy val play = Project(
     id = "play-sdk-play",
-    base = file("play"),
+    base = file("modules/play"),
     dependencies = Seq(common)
   )
   
   lazy val persistence = Project(
     id = "play-sdk-persistence",
-    base = file("persistence"),
+    base = file("modules/persistence"),
     dependencies = Seq(common)
   )
 
   lazy val security = Project(
     id = "play-sdk-security",
-    base = file("security"),
+    base = file("modules/security"),
     dependencies = Seq(common, persistence, play)
   )
   
