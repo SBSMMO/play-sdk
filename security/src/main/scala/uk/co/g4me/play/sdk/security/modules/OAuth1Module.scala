@@ -28,7 +28,7 @@ import uk.co.g4me.sdk.common.modules.BaseModule
  */
 class OAuth1Module @Inject() (configuration: Configuration) extends BaseModule with OAuth1Config {
 
-  implicit val c = Configuration.from(local) ++ configuration
+  implicit val c = Configuration.from(global) ++ configuration
 
   override def configure() = {
 
@@ -44,14 +44,14 @@ private[security] trait OAuth1Config extends SecurityConfig {
 
   private val oauth1Root = "oauth1"
 
-  override val local: Map[String, Any] = {
+  override val settings: Map[String, Any] = {
     Map(
       Add(enabled) -> true
     )
   }
 
   override def global: Map[String, Any] = {
-    super.global ++ local
+    super.global ++ settings
   }
 
   override def root: String = {

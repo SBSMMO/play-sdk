@@ -24,7 +24,7 @@ import uk.co.g4me.sdk.common.modules.BaseModule
 
 class SecurityModule @Inject() (configuration: Configuration) extends CommonModule(configuration) with SecurityConfig {
 
-  override lazy implicit val c = Configuration.from(global) ++ configuration
+  override lazy implicit val c = Configuration.from(settings) ++ configuration
 
   override def configure() {
     super.configure()
@@ -38,20 +38,21 @@ class SecurityModule @Inject() (configuration: Configuration) extends CommonModu
     install(new PasswordModule(c))
   }
 
-  override def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
-  }
 }
 
 private[security] trait SecurityConfig extends SecurityConfigConstants with CommonConfig {
 
   override val enabled = Add(enabledPath)
 
+  override def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
+  }
+
   override def root: String = {
     super.root + "." + securityRoot
   }
 
-  override def local: Map[String, Any] = {
+  private def local: Map[String, Any] = {
     Map(
       enabled -> true
     )

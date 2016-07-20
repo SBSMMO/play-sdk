@@ -26,6 +26,4 @@ import net.codingwell.scalaguice.ScalaModule
  */
 trait BaseModule extends ScalaModule {
 
-  protected def isEnabled(implicit c: Configuration): Boolean
-
 }

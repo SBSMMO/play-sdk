@@ -34,9 +34,31 @@ class CASModuleSpec extends AbstractSpec with CASConfig {
       "be disabled by default " in {
 
         assert(enabled == "play.sdk.security.cas.enabled")
-        assert(local.contains(enabled))
-        assert(local.get(enabled) == Some(false))
+        assert(settings.contains(enabled))
+        assert(settings.get(enabled) == Some(false))
       }
+    }
+
+    "be enabled with a default configuration " in {
+      implicit val config = Configuration.empty
+
+      isEnabled mustBe true
+    }
+
+    "be disabled when CommonConfig is disabled " in {
+      implicit val config = Configuration.from(Map(
+        "play.sdk.enabled" -> false
+      ))
+
+      isEnabled mustBe false
+    }
+
+    "be disabled when SecurityConfig is diabled " in {
+      implicit val config = Configuration.from(Map(
+        "play.sdk.security.enabled" -> false
+      ))
+
+      isEnabled mustBe false
     }
   }
 

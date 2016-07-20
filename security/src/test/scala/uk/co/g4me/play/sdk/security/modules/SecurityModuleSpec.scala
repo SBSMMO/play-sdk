@@ -41,9 +41,23 @@ class SecurityModuleSpec extends AbstractSpec with SecurityConfig {
       "be enabled by default " in {
 
         assert(enabled == "play.sdk.security.enabled")
-        assert(local.contains(enabled))
-        assert(local.get(enabled) == Some(true))
+        assert(settings.contains(enabled))
+        assert(settings.get(enabled) == Some(true))
       }
+    }
+
+    "be enabled with a default configuration " in {
+      implicit val config = Configuration.empty
+
+      isEnabled mustBe true
+    }
+
+    "be disabled when CommonConfig is disabled " in {
+      implicit val config = Configuration.from(Map(
+        "play.sdk.enabled" -> false
+      ))
+
+      isEnabled mustBe false
     }
   }
 
@@ -61,7 +75,7 @@ class SecurityModuleSpec extends AbstractSpec with SecurityConfig {
     }
 
     "be disabled when set " in {
-      val disabled = Map("play.sdk.security.enabled" -> false)
+      val disabled = Map(enabled -> false)
       val c = Configuration.from(disabled)
       val injector = Guice.createInjector(new SecurityModule(c))
 

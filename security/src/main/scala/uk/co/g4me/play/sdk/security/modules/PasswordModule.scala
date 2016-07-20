@@ -44,14 +44,14 @@ private[security] trait PasswordConfig extends SecurityConfig {
 
   val passwordRoot = "password"
 
-  override val local: Map[String, Any] = {
+  override val settings: Map[String, Any] = {
     Map(
       Add(enabled) -> true
     )
   }
 
   override def global: Map[String, Any] = {
-    super.global ++ local
+    super.global ++ settings
   }
 
   override def root: String = {

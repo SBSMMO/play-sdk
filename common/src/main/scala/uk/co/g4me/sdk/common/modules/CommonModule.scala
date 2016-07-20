@@ -32,8 +32,8 @@ class CommonModule @Inject() (configuration: Configuration) extends BaseModule w
 
   }
 
-  def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false) match {
+  override def isEnabled(implicit c: Configuration): Boolean = {
+    super.isEnabled match {
       case false => false
       case true =>
         bind[Enabled].to[EnabledImpl]
@@ -46,14 +46,18 @@ trait CommonConfig extends CommonConfigConstants {
 
   val enabled = Add(enabledPath)
 
-  def local: Map[String, Any] = {
+  def settings: Map[String, Any] = {
     Map(
       enabled -> true
     )
   }
 
+  def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false)
+  }
+
   def global: Map[String, Any] = {
-    local
+    settings
   }
 
   def Add(setting: String): String = {

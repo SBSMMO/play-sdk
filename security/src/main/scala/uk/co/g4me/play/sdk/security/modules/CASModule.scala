@@ -36,24 +36,24 @@ class CASModule @Inject() (configuration: Configuration) extends CommonModule(co
     if (!isEnabled) return
   }
 
-  override def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
-  }
-
 }
 
 private[security] trait CASConfig extends SecurityConfig with CASConfigConstants {
 
   override val enabled = Add("enabled")
 
-  override val local: Map[String, Any] = {
+  override val settings: Map[String, Any] = {
     Map(
       enabled -> false
     )
   }
 
   override def global: Map[String, Any] = {
-    super.global ++ local
+    super.global ++ settings
+  }
+
+  override def isEnabled(implicit c: Configuration): Boolean = {
+    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
   }
 
   override def root: String = {
@@ -63,7 +63,5 @@ private[security] trait CASConfig extends SecurityConfig with CASConfigConstants
 }
 
 trait CASConfigConstants {
-
   val casRoot = "cas"
-
 }

@@ -35,8 +35,8 @@ class CommonModuleSpec extends AbstractSpec with CommonConfig {
       "be enabled by default " in {
 
         assert(enabled == "play.sdk.enabled")
-        assert(local.contains(enabled))
-        assert(local.get(enabled) == Some(true))
+        assert(settings.contains(enabled))
+        assert(settings.get(enabled) == Some(true))
       }
     }
   }

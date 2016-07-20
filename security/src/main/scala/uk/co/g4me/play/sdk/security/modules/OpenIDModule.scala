@@ -30,7 +30,7 @@ import uk.co.g4me.sdk.common.modules.BaseModule
  */
 class OpenIDModule @Inject() (configuration: Configuration) extends BaseModule with OpenIDConfig {
 
-  implicit val c = Configuration.from(local) ++ configuration
+  implicit val c = Configuration.from(global) ++ configuration
 
   override def configure() {
 
@@ -50,14 +50,14 @@ private[security] trait OpenIDConfig extends SecurityConfig {
     super.root + "." + openIDRoot
   }
 
-  override def local: Map[String, Any] = {
+  override def settings: Map[String, Any] = {
     Map(
       Add(enabled) -> true
     )
   }
 
   override def global: Map[String, Any] = {
-    super.global ++ local
+    super.global ++ settings
   }
 
 }
