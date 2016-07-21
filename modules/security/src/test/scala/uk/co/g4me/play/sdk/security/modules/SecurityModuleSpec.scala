@@ -32,51 +32,60 @@ import uk.co.g4me.sdk.common.modules.Enabled
  * @author nshaw
  * 28 Jun 2016
  */
-class SecurityModuleSpec extends AbstractSpec with SecurityConfig {
+class SecurityModuleSpec extends AbstractSpec {
 
-  "The SecurityConfig trait " should {
+  import SecurityConfiguration._
 
-    "provide a Map of default settings and " should {
+  val enabledSetting = rootPath + "." + enabledPath
+
+  "The SecurityConfiguration object " should {
+
+    def config(data: (String, Any)*) = SecurityConfiguration.fromConfiguration(Configuration.from(data.toMap))
+
+    "provide a default config and " should {
 
       "be enabled by default " in {
-
-        assert(enabled == "play.sdk.security.enabled")
-        assert(settings.contains(enabled))
-        assert(settings.get(enabled) == Some(true))
+        config().enabled mustBe true
       }
     }
 
-    "be enabled with a default configuration " in {
-      implicit val config = Configuration.from(settings)
+    "get settings from an injected config and " should {
 
-      isEnabled mustBe true
+      "be disabled if set " in {
+        config(enabledSetting -> false).enabled mustBe false
+      }
+
+      "be enabled if set " in {
+        config(enabledSetting -> true).enabled mustBe true
+      }
     }
 
-    "be disabled when CommonConfig is disabled " in {
-      implicit val config = Configuration.from(Map(
-        "play.sdk.enabled" -> false
-      ))
-
-      isEnabled mustBe false
-    }
   }
 
   "The SecurityModule " should {
+
+    def config(data: (String, Any)*) = Configuration.from(data.toMap)
+
     "Automatically install modules on the class path " in {
       pending
     }
 
     "be enabled by default " in {
-      val c = Configuration.empty
+      val c = config()
       val injector = Guice.createInjector(new SecurityModule(c))
 
       val ping = injector.getInstance(classOf[Enabled])
-
     }
 
     "be disabled when set " in {
-      val disabled = Map(enabled -> false)
-      val c = Configuration.from(disabled)
+      val c = config(enabledSetting -> false)
+      val injector = Guice.createInjector(new SecurityModule(c))
+
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
+    }
+
+    "be disabled if common is disabled " in {
+      val c = config("play.sdk.enabled" -> false)
       val injector = Guice.createInjector(new SecurityModule(c))
 
       an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])

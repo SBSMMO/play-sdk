@@ -19,51 +19,49 @@ package uk.co.g4me.play.sdk.security.modules
 import play.api.{ Environment, Configuration }
 import javax.inject.Inject
 import play.api.inject.Module
-import uk.co.g4me.sdk.common.modules.{ CommonModule, CommonConfig }
-import uk.co.g4me.sdk.common.modules.BaseModule
+import uk.co.g4me.sdk.common.modules.{ BaseModule, CommonModule, Enabled, EnabledImpl }
+import uk.co.g4me.sdk.common.modules.CommonConfiguration
 
-class SecurityModule @Inject() (configuration: Configuration) extends CommonModule(configuration) with SecurityConfig {
+class SecurityModule @Inject() (configuration: Configuration) extends BaseModule {
 
-  override lazy implicit val c = Configuration.from(settings) ++ configuration
+  private val c = SecurityConfiguration.fromConfiguration(configuration)
 
   override def configure() {
-    super.configure()
-
     if (!isEnabled) return
 
-    install(new CASModule(c))
-    install(new OAuth1Module(c))
-    install(new OAuth2Module(c))
-    install(new OpenIDModule(c))
-    install(new PasswordModule(c))
+    install(new CommonModule(configuration))
+
+    //    install(new CASModule(configuration))
+    //    install(new OAuth1Module(configuration))
+    //    install(new OAuth2Module(configuration))
+    //    install(new OpenIDModule(configuration))
+    //    install(new PasswordModule(configuration))
   }
 
+  private def isEnabled(): Boolean = {
+    c.enabled && CommonConfiguration.fromConfiguration(configuration).enabled
+
+  }
 }
 
-private[security] trait SecurityConfig extends SecurityConfigConstants with CommonConfig {
+case class SecurityConfiguration(enabled: Boolean)
 
-  override val enabled = Add(enabledPath)
+object SecurityConfiguration {
 
-  override def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
-  }
+  val rootPath = "play.sdk.security"
+  val enabledPath = "enabled"
 
-  override def root: String = {
-    super.root + "." + securityRoot
-  }
+  def fromConfiguration(conf: Configuration): SecurityConfiguration = {
+    val c = conf.getConfig(rootPath).getOrElse(Configuration.empty)
 
-  private def local: Map[String, Any] = {
-    Map(
-      enabled -> true
+    SecurityConfiguration(
+      enabled = c.getBoolean(enabledPath).getOrElse(true)
     )
   }
 
-  override def global: Map[String, Any] = {
-    super.global ++ local
+  def from(data: Map[String, Any]) = {
+    val c = Configuration.from(data)
+
+    fromConfiguration(c)
   }
-
-}
-
-trait SecurityConfigConstants {
-  val securityRoot = "security"
 }

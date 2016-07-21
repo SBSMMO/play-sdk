@@ -17,50 +17,69 @@
 package uk.co.g4me.sdk.common.modules
 
 import uk.co.g4me.sdk.common.test.AbstractSpec
-import play.api.Configuration
-import com.google.inject.Guice
-import com.google.inject.ProvisionException
-import com.google.inject.ConfigurationException
+import com.google.inject.{ Guice, ProvisionException, ConfigurationException }
+import play.api.{ Configuration, PlayException }
 
 /**
  * @author nshaw
  * 29 Jun 2016
  */
-class CommonModuleSpec extends AbstractSpec with CommonConfig {
+class CommonModuleSpec extends AbstractSpec {
 
-  "The CommonConfig trait " should {
+  import CommonConfiguration._
 
-    "provide a Map of default settings and " should {
+  val enabledSetting = rootPath + "." + enabledPath
+
+  "The CommonConfiguration object " should {
+
+    def config(data: (String, Any)*) = CommonConfiguration.fromConfiguration(Configuration.from(data.toMap))
+
+    "provide a default config and " should {
 
       "be enabled by default " in {
-
-        assert(enabled == "play.sdk.enabled")
-        assert(settings.contains(enabled))
-        assert(settings.get(enabled) == Some(true))
+        config().enabled mustBe true
       }
     }
+
+    "get settings from an injected config and " should {
+
+      "be disabled if set " in {
+        config(enabledSetting -> false).enabled mustBe false
+      }
+
+      "be enabled if set " in {
+        config(enabledSetting -> true).enabled mustBe true
+      }
+
+      "throw an exception if null " in {
+        an[PlayException] should be thrownBy config(enabledSetting -> null).enabled
+      }
+
+    }
+
   }
 
   "The CommonModule " should {
+
+    def config(data: (String, Any)*) = Configuration.from(data.toMap)
+
     "Automatically install modules on the class path " in {
       pending
     }
 
     "be enabled by default " in {
-      val c = Configuration.empty
+      val c = config()
       val injector = Guice.createInjector(new CommonModule(c))
 
       val ping = injector.getInstance(classOf[Enabled])
     }
 
     "be disabled when set " in {
-      val disabled = Map(enabled -> false)
-      val c = Configuration.from(disabled)
+      val c = config(enabledSetting -> false)
       val injector = Guice.createInjector(new CommonModule(c))
 
       an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
     }
 
   }
-
 }
