@@ -20,6 +20,7 @@ import play.api.Configuration
 import javax.inject.Inject
 import net.codingwell.scalaguice.ScalaModule
 import uk.co.g4me.sdk.common.modules.BaseModule
+import uk.co.g4me.sdk.common.modules.CommonConfiguration
 
 /**
  * @author nshaw
@@ -34,7 +35,13 @@ class CASModule @Inject() (configuration: Configuration) extends BaseModule {
   }
 
   def isEnabled(implicit c: CASConfiguration): Boolean = {
-    c.enabled
+    val enabled = c.enabled &&
+      SecurityConfiguration.fromConfiguration(configuration).enabled &&
+      CommonConfiguration.fromConfiguration(configuration).enabled
+
+    if (enabled) bind[CASEnabled].to[CASEnabledImpl]
+
+    enabled
   }
 
 }
@@ -59,3 +66,6 @@ object CASConfiguration {
     fromConfiguration(c)
   }
 }
+
+class CASEnabledImpl extends CASEnabled
+trait CASEnabled

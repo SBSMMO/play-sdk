@@ -18,7 +18,7 @@ package uk.co.g4me.sdk.common.modules
 
 import com.google.inject.Inject
 import play.api.mvc._
-import play.api.{ Environment, Configuration }
+import play.api.Configuration
 
 /**
  * @author nshaw
@@ -34,7 +34,7 @@ class CommonModule @Inject() (configuration: Configuration) extends BaseModule {
   }
 
   private def isEnabled(): Boolean = {
-    if (c.enabled) bind[Enabled].to[EnabledImpl]
+    if (c.enabled) bind[CommonEnabled].to[CommonEnabledImpl]
 
     c.enabled
   }

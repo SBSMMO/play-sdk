@@ -19,7 +19,7 @@ package uk.co.g4me.play.sdk.security.modules
 import play.api.{ Environment, Configuration }
 import javax.inject.Inject
 import play.api.inject.Module
-import uk.co.g4me.sdk.common.modules.{ BaseModule, CommonModule, Enabled, EnabledImpl }
+import uk.co.g4me.sdk.common.modules.{ BaseModule, CommonModule }
 import uk.co.g4me.sdk.common.modules.CommonConfiguration
 
 class SecurityModule @Inject() (configuration: Configuration) extends BaseModule {
@@ -39,8 +39,11 @@ class SecurityModule @Inject() (configuration: Configuration) extends BaseModule
   }
 
   private def isEnabled(): Boolean = {
-    c.enabled && CommonConfiguration.fromConfiguration(configuration).enabled
+    val enabled = c.enabled && CommonConfiguration.fromConfiguration(configuration).enabled
 
+    if (enabled) bind[SecurityEnabled].to[SecurityEnabledImpl]
+
+    enabled
   }
 }
 
@@ -65,3 +68,6 @@ object SecurityConfiguration {
     fromConfiguration(c)
   }
 }
+
+class SecurityEnabledImpl extends SecurityEnabled
+trait SecurityEnabled

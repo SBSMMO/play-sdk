@@ -19,7 +19,7 @@ package uk.co.g4me.play.sdk.security.modules
 import uk.co.g4me.sdk.common.test.AbstractSpec
 import play.api.Configuration
 import com.google.inject.{ ConfigurationException, Guice }
-import uk.co.g4me.sdk.common.modules.Enabled
+import uk.co.g4me.sdk.common.modules.CommonEnabled
 
 /**
  * @author nshaw
@@ -29,11 +29,11 @@ class CASModuleSpec extends AbstractSpec {
 
   import CASConfiguration._
 
+  val enabledSetting = rootPath + "." + enabledPath
+
   "The CASConfiguration object " should {
 
     def config(data: (String, Any)*) = CASConfiguration.fromConfiguration(Configuration.from(data.toMap))
-
-    val enabledSetting = rootPath + "." + enabledPath
 
     "provide a default config and " should {
 
@@ -48,8 +48,44 @@ class CASModuleSpec extends AbstractSpec {
       "be enabled if set " in {
         config(enabledSetting -> true).enabled mustBe true
       }
+    }
+  }
 
+  "The CASModule " should {
+
+    def config(data: (String, Any)*) = Configuration.from(data.toMap)
+
+    "be disabled by default " in {
+      val c = config()
+      val injector = Guice.createInjector(new SecurityModule(c))
+
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[CASEnabled])
     }
 
+    "be enabled when set " in {
+      val c = config(enabledSetting -> true)
+      val injector = Guice.createInjector(new SecurityModule(c))
+
+      injector.getInstance(classOf[CommonEnabled])
+      injector.getInstance(classOf[SecurityEnabled])
+
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[CASEnabled])
+    }
+
+    "be disabled if SecurityModule is disabled " in {
+      val c = config("play.sdk.security.enabled" -> false, enabledSetting -> true)
+      val injector = Guice.createInjector(new SecurityModule(c))
+
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[SecurityEnabled])
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[CASEnabled])
+    }
+
+    "be disabled if CommonModule is disabled " in {
+      val c = config("play.sdk.enabled" -> false, enabledSetting -> true)
+      val injector = Guice.createInjector(new SecurityModule(c))
+
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[CommonEnabled])
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[CASEnabled])
+    }
   }
 }

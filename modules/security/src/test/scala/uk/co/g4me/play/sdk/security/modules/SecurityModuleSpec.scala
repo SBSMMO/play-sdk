@@ -16,17 +16,11 @@
 
 package uk.co.g4me.play.sdk.security.modules
 
-import uk.co.g4me.sdk.common.test.AbstractSpec
 import com.google.inject.{ ConfigurationException, Guice }
-import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
-import com.mohiva.play.silhouette.impl.providers.CasInfo
-import play.api.{ Configuration, Environment }
-import play.api.mvc.Results._
-import play.api.mvc.{ Action, EssentialAction }
-import org.scalatestplus.play.PlaySpec
-import akka.stream.Materializer
-import org.scalatestplus.play.OneAppPerSuite
-import uk.co.g4me.sdk.common.modules.Enabled
+
+import javax.inject.Inject
+import play.api.Configuration
+import uk.co.g4me.sdk.common.test.AbstractSpec
 
 /**
  * @author nshaw
@@ -74,21 +68,21 @@ class SecurityModuleSpec extends AbstractSpec {
       val c = config()
       val injector = Guice.createInjector(new SecurityModule(c))
 
-      val ping = injector.getInstance(classOf[Enabled])
+      val ping = injector.getInstance(classOf[SecurityEnabled])
     }
 
     "be disabled when set " in {
       val c = config(enabledSetting -> false)
       val injector = Guice.createInjector(new SecurityModule(c))
 
-      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[SecurityEnabled])
     }
 
-    "be disabled if common is disabled " in {
+    "be disabled if CommonModule is disabled " in {
       val c = config("play.sdk.enabled" -> false)
       val injector = Guice.createInjector(new SecurityModule(c))
 
-      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
+      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[SecurityEnabled])
     }
 
   }
