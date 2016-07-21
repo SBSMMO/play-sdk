@@ -2,11 +2,6 @@ import sbt._
 
 object Dependencies {
 
-  val resolvers = Seq(
-    "Atlassian Releases" at "https://maven.atlassian.com/public/",
-    "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
-  )
-  
   object Library {
 
     object Play {

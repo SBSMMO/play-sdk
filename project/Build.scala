@@ -1,7 +1,14 @@
 import sbt.Keys._
 import sbt._
 
-object Build extends Build {
+object Build extends Build {  
+  
+  lazy val commonSettings = Seq(
+    resolvers in ThisBuild += "Atlassian Releases" at "https://maven.atlassian.com/public/",
+    resolvers in ThisBuild += Resolver.mavenLocal,
+    resolvers in ThisBuild += Resolver.sonatypeRepo("snapshots"),
+    resolvers in ThisBuild += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+  )
   
   //required for the javaOptions to be passed in
   fork := true
@@ -12,24 +19,24 @@ object Build extends Build {
   
   lazy val common = Project(
     id = "play-sdk-common",
-    base = file("common")
+    base = file("modules/common")
   )
   
   lazy val play = Project(
     id = "play-sdk-play",
-    base = file("play"),
+    base = file("modules/play"),
     dependencies = Seq(common)
   )
   
   lazy val persistence = Project(
     id = "play-sdk-persistence",
-    base = file("persistence"),
+    base = file("modules/persistence"),
     dependencies = Seq(common)
   )
 
   lazy val security = Project(
     id = "play-sdk-security",
-    base = file("security"),
+    base = file("modules/security"),
     dependencies = Seq(common, persistence, play)
   )
   
@@ -41,8 +48,7 @@ object Build extends Build {
       persistence,
       play,
       security
-    ),
-    settings = Defaults.coreDefaultSettings)
+    ), settings = commonSettings)  
   
   
 }
