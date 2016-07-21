@@ -25,61 +25,30 @@ import uk.co.g4me.sdk.common.modules.Enabled
  * @author nshaw
  * 15 Jul 2016
  */
-class CASModuleSpec extends AbstractSpec with CASConfig {
+class CASModuleSpec extends AbstractSpec {
 
-  "The CASConfig trait " should {
+  import CASConfiguration._
 
-    "provide a Map of default settings and " should {
+  "The CASConfiguration object " should {
+
+    def config(data: (String, Any)*) = CASConfiguration.fromConfiguration(Configuration.from(data.toMap))
+
+    val enabledSetting = rootPath + "." + enabledPath
+
+    "provide a default config and " should {
 
       "be disabled by default " in {
-
-        assert(enabled == "play.sdk.security.cas.enabled")
-        assert(settings.contains(enabled))
-        assert(settings.get(enabled) == Some(false))
+        config().enabled mustBe false
       }
-    }
 
-    "be disabled with a default configuration " in {
-      implicit val config = Configuration.from(settings)
+      "be disabled if set " in {
+        config(enabledSetting -> false).enabled mustBe false
+      }
 
-      isEnabled mustBe false
-    }
+      "be enabled if set " in {
+        config(enabledSetting -> true).enabled mustBe true
+      }
 
-    "be disabled when CommonConfig is disabled " in {
-      implicit val config = Configuration.from(Map(
-        "play.sdk.enabled" -> false
-      ))
-
-      isEnabled mustBe false
-    }
-
-    "be disabled when SecurityConfig is diabled " in {
-      implicit val config = Configuration.from(Map(
-        "play.sdk.security.enabled" -> false
-      ))
-
-      isEnabled mustBe false
-    }
-  }
-
-  "The CASModule " should {
-
-    "be disabled by default " in {
-      val c = Configuration.empty
-      val injector = Guice.createInjector(new CASModule(c))
-
-      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[Enabled])
-    }
-
-    "be enabled when set " in {
-      val settings = Map(enabled -> true)
-      val c = Configuration.from(settings)
-      val injector = Guice.createInjector(new CASModule(c))
-
-      assert(settings.contains(enabled))
-      assert(settings.get(enabled) == Some(true))
-
-      val ping = injector.getInstance(classOf[Enabled])
     }
 
   }

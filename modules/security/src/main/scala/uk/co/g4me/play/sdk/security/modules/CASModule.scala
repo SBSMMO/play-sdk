@@ -16,11 +16,8 @@
 
 package uk.co.g4me.play.sdk.security.modules
 
-import com.google.inject.PrivateModule
-import net.codingwell.scalaguice.ScalaPrivateModule
 import play.api.Configuration
 import javax.inject.Inject
-import uk.co.g4me.sdk.common.modules.CommonModule
 import net.codingwell.scalaguice.ScalaModule
 import uk.co.g4me.sdk.common.modules.BaseModule
 
@@ -28,40 +25,37 @@ import uk.co.g4me.sdk.common.modules.BaseModule
  * @author nshaw
  * 2 Jul 2016
  */
-class CASModule @Inject() (configuration: Configuration) extends CommonModule(configuration) with ScalaModule with CASConfig {
+class CASModule @Inject() (configuration: Configuration) extends BaseModule {
 
-  override implicit lazy val c = Configuration.from(global) ++ configuration
+  implicit lazy val c = CASConfiguration.fromConfiguration(configuration)
 
   override def configure() {
     if (!isEnabled) return
   }
 
+  def isEnabled(implicit c: CASConfiguration): Boolean = {
+    c.enabled
+  }
+
 }
 
-private[security] trait CASConfig extends SecurityConfig with CASConfigConstants {
+case class CASConfiguration(enabled: Boolean)
 
-  override val enabled = Add("enabled")
+object CASConfiguration {
+  val rootPath = "play.sdk.security.cas"
+  val enabledPath = "enabled"
 
-  override val settings: Map[String, Any] = {
-    Map(
-      enabled -> false
+  def fromConfiguration(conf: Configuration): CASConfiguration = {
+    val c = conf.getConfig(rootPath).getOrElse(Configuration.empty)
+
+    CASConfiguration(
+      enabled = c.getBoolean(enabledPath).getOrElse(false)
     )
   }
 
-  override def global: Map[String, Any] = {
-    super.global ++ settings
+  def from(data: Map[String, Any]) = {
+    val c = Configuration.from(data)
+
+    fromConfiguration(c)
   }
-
-  override def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false) && super.isEnabled
-  }
-
-  override def root: String = {
-    super.root + "." + casRoot
-  }
-
-}
-
-trait CASConfigConstants {
-  val casRoot = "cas"
 }

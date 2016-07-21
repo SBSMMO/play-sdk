@@ -16,61 +16,48 @@
 
 package uk.co.g4me.sdk.common.modules
 
-import play.api.Configuration
 import com.google.inject.Inject
+import play.api.mvc._
+import play.api.{ Environment, Configuration }
 
 /**
  * @author nshaw
  * 28 Jun 2016
  */
-class CommonModule @Inject() (configuration: Configuration) extends BaseModule with CommonConfig {
+class CommonModule @Inject() (configuration: Configuration) extends BaseModule {
 
-  implicit lazy val c = Configuration.from(global) ++ configuration
+  private val c = CommonConfiguration.fromConfiguration(configuration)
 
   def configure() {
     if (!isEnabled) return
 
   }
 
-  override def isEnabled(implicit c: Configuration): Boolean = {
-    super.isEnabled match {
-      case false => false
-      case true =>
-        bind[Enabled].to[EnabledImpl]
-        true
-    }
+  private def isEnabled(): Boolean = {
+    if (c.enabled) bind[Enabled].to[EnabledImpl]
+
+    c.enabled
   }
 }
 
-trait CommonConfig extends CommonConfigConstants {
+case class CommonConfiguration(enabled: Boolean)
 
-  val enabled = Add(enabledPath)
+object CommonConfiguration {
 
-  def settings: Map[String, Any] = {
-    Map(
-      enabled -> true
+  val rootPath = "play.sdk"
+  val enabledPath = "enabled"
+
+  def fromConfiguration(conf: Configuration): CommonConfiguration = {
+    val c = conf.getConfig(rootPath).getOrElse(Configuration.empty)
+
+    CommonConfiguration(
+      enabled = c.getBoolean(enabledPath).getOrElse(true)
     )
   }
 
-  def isEnabled(implicit c: Configuration): Boolean = {
-    c.getBoolean(enabled).getOrElse(false)
+  def from(data: Map[String, Any]) = {
+    val c = Configuration.from(data)
+
+    fromConfiguration(c)
   }
-
-  def global: Map[String, Any] = {
-    settings
-  }
-
-  def Add(setting: String): String = {
-    root + "." + setting
-  }
-
-  def root = {
-    rootPath
-  }
-
-}
-
-trait CommonConfigConstants {
-  val rootPath = "play.sdk"
-  val enabledPath = "enabled"
 }
