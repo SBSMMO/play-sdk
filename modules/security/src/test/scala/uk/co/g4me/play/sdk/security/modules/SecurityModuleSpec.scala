@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.co.g4me.play.sdk.security.modules
 
 import com.google.inject.{ ConfigurationException, Guice }
@@ -41,6 +40,14 @@ class SecurityModuleSpec extends AbstractSpec {
       "be enabled by default " in {
         config().enabled mustBe true
       }
+
+      "enable the ForceAuthentication filter " in {
+        pending
+      }
+
+      "disable the DeniedHosts filter " in {
+        pending
+      }
     }
 
     "get settings from an injected config and " should {
@@ -51,6 +58,10 @@ class SecurityModuleSpec extends AbstractSpec {
 
       "be enabled if set " in {
         config(enabledSetting -> true).enabled mustBe true
+      }
+
+      "disable forced authentication if set " in {
+        pending
       }
     }
 
@@ -83,6 +94,14 @@ class SecurityModuleSpec extends AbstractSpec {
       val injector = Guice.createInjector(new SecurityModule(c))
 
       an[ConfigurationException] should be thrownBy injector.getInstance(classOf[SecurityEnabled])
+    }
+
+    "inject a ForceAuthentication filter by default " in {
+      pending
+    }
+
+    "inject a DeniedHosts filter if configured " in {
+      pending
     }
 
   }
