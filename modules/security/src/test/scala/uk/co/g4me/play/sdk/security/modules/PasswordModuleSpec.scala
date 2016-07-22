@@ -29,6 +29,21 @@ class PasswordModuleSpec extends AbstractSpec {
   "The PasswordConfiguration object " should {
 
     def config(data: (String, Any)*) = PasswordConfigration.from(data.toMap)
+    
+    "provide a default config and " should {
+
+      "be disabled by default " in {
+        config().enabled mustBe false
+      }
+
+//      "be disabled if set " in {
+//        config(enabledSetting -> false).enabled mustBe false
+//      }
+//
+//      "be enabled if set " in {
+//        config(enabledSetting -> true).enabled mustBe true
+//      }
+    }
 
   }
 
