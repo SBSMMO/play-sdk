@@ -14,50 +14,29 @@
  * limitations under the License.
  */
 
-package uk.co.g4me.play.sdk.security.modules
+package uk.co.g4me.sdk.common.guice
 
 import uk.co.g4me.sdk.common.test.AbstractSpec
 import play.api.Configuration
 import com.google.inject.Guice
+import uk.co.g4me.sdk.common.modules.CommonEnabled
 
 /**
  * @author nshaw
  * 22 Jul 2016
  */
-class PasswordModuleSpec extends AbstractSpec {
+class AutoLoaderSpec extends AbstractSpec {
 
-  "The PasswordConfiguration object " should {
-
-    def config(data: (String, Any)*) = PasswordConfigration.from(data.toMap)
-
-    "provide a default config and " should {
-
-      "be disabled by default " in {
-        config().enabled mustBe false
-      }
-
-      //      "be disabled if set " in {
-      //        config(enabledSetting -> false).enabled mustBe false
-      //      }
-      //
-      //      "be enabled if set " in {
-      //        config(enabledSetting -> true).enabled mustBe true
-      //      }
-    }
-
-  }
-
-  "The PasswordModule " should {
+  "The AutoLoader " should {
 
     def config(data: (String, Any)*) = Configuration.from(data.toMap)
 
-    "be disabled by default " in {
+    "Automatically install modules on the class path " in {
+      val injector = Guice.createInjector(new AutoLoader(config()))
 
-      val c = config()
-      val injector = Guice.createInjector(new PasswordModule(c))
-
-      pending
+      val ping = injector.getInstance(classOf[CommonEnabled])
     }
+
   }
 
 }
