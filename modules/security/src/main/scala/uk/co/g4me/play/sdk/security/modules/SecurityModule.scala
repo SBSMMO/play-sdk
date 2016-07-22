@@ -30,8 +30,7 @@ class SecurityModule @Inject() (configuration: Configuration) extends BaseModule
     if (!isEnabled) return
 
     install(new CommonModule(configuration))
-
-    //    install(new CASModule(configuration))
+    install(new CASModule(configuration))
     //    install(new OAuth1Module(configuration))
     //    install(new OAuth2Module(configuration))
     //    install(new OpenIDModule(configuration))

@@ -32,7 +32,7 @@ class CommonModuleSpec extends AbstractSpec {
 
   "The CommonConfiguration object " should {
 
-    def config(data: (String, Any)*) = CommonConfiguration.fromConfiguration(Configuration.from(data.toMap))
+    def config(data: (String, Any)*) = CommonConfiguration.from(data.toMap)
 
     "provide a default config and " should {
 

@@ -33,6 +33,7 @@ class PasswordModule @Inject() (configuration: Configuration) extends BaseModule
   implicit lazy val c = PasswordConfigration.fromConfiguration(configuration)
 
   override def configure() {
+    if (!isEnabled) return
 
   }
 

@@ -33,7 +33,7 @@ class CASModuleSpec extends AbstractSpec {
 
   "The CASConfiguration object " should {
 
-    def config(data: (String, Any)*) = CASConfiguration.fromConfiguration(Configuration.from(data.toMap))
+    def config(data: (String, Any)*) = CASConfiguration.from(data.toMap)
 
     "provide a default config and " should {
 
@@ -68,8 +68,7 @@ class CASModuleSpec extends AbstractSpec {
 
       injector.getInstance(classOf[CommonEnabled])
       injector.getInstance(classOf[SecurityEnabled])
-
-      an[ConfigurationException] should be thrownBy injector.getInstance(classOf[CASEnabled])
+      injector.getInstance(classOf[CASEnabled])
     }
 
     "be disabled if SecurityModule is disabled " in {

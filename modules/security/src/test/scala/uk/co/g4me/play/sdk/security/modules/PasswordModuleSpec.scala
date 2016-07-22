@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.g4me.play.sdk.persistence
+package uk.co.g4me.play.sdk.security.modules
 
 import uk.co.g4me.sdk.common.test.AbstractSpec
 import play.api.Configuration
@@ -24,30 +24,24 @@ import com.google.inject.Guice
  * @author nshaw
  * 22 Jul 2016
  */
-class PersistenceModuleSpec extends AbstractSpec {
+class PasswordModuleSpec extends AbstractSpec {
 
-  "The PersistenceConfiguration object " should {
+  "The PasswordConfiguration object " should {
 
-    "provide a default config and " should {
-
-      "be enabled by default " in {
-        pending
-      }
-    }
+    def config(data: (String, Any)*) = CASConfiguration.from(data.toMap)
 
   }
-  
-  "The PersistenceModule " should {
-    
+
+  "The PasswordModule " should {
+
     def config(data: (String, Any)*) = Configuration.from(data.toMap)
-    
-    "Automatically install modules on the classpath " in {
-      pending
-    }
-    
-    "be enabled by default " in {
+
+    "be disabled by default " in {
+
       val c = config()
-      val injector = Guice.createInjector(new PersistenceModule(c))
+      val injector = Guice.createInjector(new PasswordModule(c))
+
+      pending
     }
   }
 

@@ -33,7 +33,7 @@ class SecurityModuleSpec extends AbstractSpec {
 
   "The SecurityConfiguration object " should {
 
-    def config(data: (String, Any)*) = SecurityConfiguration.fromConfiguration(Configuration.from(data.toMap))
+    def config(data: (String, Any)*) = SecurityConfiguration.from(data.toMap)
 
     "provide a default config and " should {
 
