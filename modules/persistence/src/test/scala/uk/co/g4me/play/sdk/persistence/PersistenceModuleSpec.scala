@@ -36,15 +36,15 @@ class PersistenceModuleSpec extends AbstractSpec {
     }
 
   }
-  
+
   "The PersistenceModule " should {
-    
+
     def config(data: (String, Any)*) = Configuration.from(data.toMap)
-    
+
     "Automatically install modules on the classpath " in {
       pending
     }
-    
+
     "be enabled by default " in {
       val c = config()
       val injector = Guice.createInjector(new PersistenceModule(c))

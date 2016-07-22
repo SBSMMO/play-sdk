@@ -28,7 +28,7 @@ class PasswordModuleSpec extends AbstractSpec {
 
   "The PasswordConfiguration object " should {
 
-    def config(data: (String, Any)*) = CASConfiguration.from(data.toMap)
+    def config(data: (String, Any)*) = PasswordConfigration.from(data.toMap)
 
   }
 

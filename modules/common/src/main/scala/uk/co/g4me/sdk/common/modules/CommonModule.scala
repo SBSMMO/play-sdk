@@ -61,3 +61,6 @@ object CommonConfiguration {
     fromConfiguration(c)
   }
 }
+
+class CommonEnabledImpl extends CommonEnabled
+trait CommonEnabled
